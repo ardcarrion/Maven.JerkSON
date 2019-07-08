@@ -44,7 +44,6 @@ public class ItemParser {
         List<String[]> pairs = Arrays.stream(rawpairs).filter(str -> p2.matcher(str).find())
                                                       .map(p2::split)
                                                       .collect(Collectors.toList());
-//        if (pairs.size() < 4) throw new ItemParseException();
         try {
             String name = pairs.get(0)[1].toLowerCase();
             Double price = Double.valueOf(pairs.get(1)[1]);

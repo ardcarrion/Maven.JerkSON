@@ -20,19 +20,17 @@ public class GroceryReporter {
 
     @Override
     public String toString() {
-
-
         String[] names = {"Milk", "Bread", "Cookies", "Apples"};
         HashMap<String, Double[]> prices = new HashMap<>();
         for (String name: names) {
             long count = addGroceryItem(name, prices);
-            System.out.printf("name:%10s\n", name);
+            System.out.printf("name:%8s\tseen:%d\n", name, count);
             System.out.println("=============\t=============");
             Double max = prices.get(name)[0];
             Double min = prices.get(name)[1];
-            System.out.printf("Price:%10.2f\n", max);
-            System.out.printf("-------------\t------------");
-            if (!min.equals(max)) System.out.printf("Price:%10.2f", min);
+            System.out.printf("Price:%7.2f\n", max);
+            System.out.println("-------------\t------------");
+            if (!min.equals(max)) System.out.printf("Price:%7.2f\n", min);
         }
         return null;
     }
