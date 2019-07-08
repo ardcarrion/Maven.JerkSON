@@ -12,6 +12,16 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class ItemParser {
+    public Integer getErrorCount() {
+        return errorCount;
+    }
+
+    private Integer errorCount;
+
+    public ItemParser() {
+        errorCount = 0;
+    }
+
     public List<Item> parseItemList(String valueToParse) {
         List<Item> rawItems = new ArrayList<>();
         Pattern p = Pattern.compile("##");
@@ -22,7 +32,9 @@ public class ItemParser {
                 rawItems.add(null);
             }
         });
-        return rawItems.stream().filter(Objects::nonNull).collect(Collectors.toList());
+        List<Item> items = rawItems.stream().filter(Objects::nonNull).collect(Collectors.toList());
+        this.errorCount = rawItems.size() - items.size();
+        return items;
     }
 
     public Item parseSingleItem(String singleItem) throws ItemParseException {
@@ -32,13 +44,17 @@ public class ItemParser {
         List<String[]> pairs = Arrays.stream(rawpairs).filter(str -> p2.matcher(str).find())
                                                       .map(p2::split)
                                                       .collect(Collectors.toList());
-        if (pairs.size() < 4) throw new ItemParseException();
-        String name = pairs.get(0)[1].toLowerCase();
-        Double price = Double.valueOf(pairs.get(1)[1]);
-        String type = pairs.get(2)[1].toLowerCase();
-        String expirationTemp = pairs.get(3)[1];
-        String expiration = (Pattern.compile("##").matcher(expirationTemp).find()) ? expirationTemp.substring(0,expirationTemp.length()-2) : expirationTemp;
-        return new Item(name, price, type, expiration);
+//        if (pairs.size() < 4) throw new ItemParseException();
+        try {
+            String name = pairs.get(0)[1].toLowerCase();
+            Double price = Double.valueOf(pairs.get(1)[1]);
+            String type = pairs.get(2)[1].toLowerCase();
+            String expirationTemp = pairs.get(3)[1];
+            String expiration = (Pattern.compile("##").matcher(expirationTemp).find()) ? expirationTemp.substring(0, expirationTemp.length() - 2) : expirationTemp;
+            return new Item(name, price, type, expiration);
+        } catch (Exception ex) {
+            throw new ItemParseException();
+        }
 
     }
 }
