@@ -2,9 +2,6 @@ package io.zipcoder;
 
 import io.zipcoder.utils.Item;
 import io.zipcoder.utils.ItemParseException;
-import io.zipcoder.utils.match.Match;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -39,7 +36,8 @@ public class ItemParser {
         String name = pairs.get(0)[1].toLowerCase();
         Double price = Double.valueOf(pairs.get(1)[1]);
         String type = pairs.get(2)[1].toLowerCase();
-        String expiration = pairs.get(3)[1];
+        String expirationTemp = pairs.get(3)[1];
+        String expiration = (Pattern.compile("##").matcher(expirationTemp).find()) ? expirationTemp.substring(0,expirationTemp.length()-2) : expirationTemp;
         return new Item(name, price, type, expiration);
 
     }
