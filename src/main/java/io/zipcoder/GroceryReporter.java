@@ -22,8 +22,10 @@ public class GroceryReporter {
     public String toString() {
         String[] names = {"Milk", "Bread", "Cookies", "Apples"};
         HashMap<String, Double[]> prices = new HashMap<>();
+        ItemParser ip = new ItemParser();
+        List<Item> items = ip.parseItemList(originalFileText);
         for (String name: names) {
-            long count = addGroceryItem(name, prices);
+            long count = addGroceryItem(name, prices, items);
             System.out.printf("name:%8s\tseen:%d\n", name, count);
             System.out.println("=============\t=============");
             Double max = prices.get(name)[0];
@@ -32,12 +34,11 @@ public class GroceryReporter {
             System.out.println("-------------\t------------");
             if (!min.equals(max)) System.out.printf("Price:%7.2f\n", min);
         }
+        System.out.println(ip.getErrorCount());
         return null;
     }
 
-    public long addGroceryItem(String name, HashMap<String, Double[]> list) {
-        ItemParser ip = new ItemParser();
-        List<Item> items = ip.parseItemList(originalFileText);
+    public long addGroceryItem(String name, HashMap<String, Double[]> list, List<Item> items) {
         Item max = items.stream().filter(item -> item.getName().equals(name.toLowerCase()))
                             .max(Comparator.comparingDouble(Item::getPrice)).get();
         Item min = items.stream().filter(item -> item.getName().equals(name.toLowerCase()))
